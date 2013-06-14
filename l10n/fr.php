@@ -22,6 +22,8 @@
 'Rename'=>'Renommage',
 'Web interface'=>'Interface web',
 'WebDav access'=>'Accès webdav',
+'CardDav access'=>'Accès carddav',
+'CalDav access'=>'Accès caldav',
 
 'User'=>'Utilisat-eur-rice',
 'Activity'=>'Activité',
