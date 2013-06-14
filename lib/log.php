@@ -14,6 +14,7 @@ class OC_SuperLog {
 	public static function log($path,$path2,$action,$protocol='web'){
 		
 		$user = OCP\User::getUser();
+		if(empty($user)) $user = $_SERVER['PHP_AUTH_USER'];
 		
 		$folder = is_array($path)?dirname($path['path']):dirname($path);
 		$file = is_array($path)?basename($path['path']):basename($path);
@@ -21,8 +22,27 @@ class OC_SuperLog {
 		$folder2 = is_array($path2)?dirname($path2['path']):(!empty($path2)?dirname($path2):$folder);
 		$file2 = is_array($path2)?basename($path2['path']):(!empty($path2)?basename($path2):$file);		
 		
-		$type='user';
-		if(!empty($file2)) $type = \OC\Files\Filesystem::filetype($folder2.'/'.$file2);	
+		$type='unknown';
+		$CONFIG_DATADIRECTORY = OC_Config::getValue( "datadirectory", OC::$SERVERROOT."/data" );
+		if(!empty($file2)){
+			if($protocol=='web'){
+				$type = \OC\Files\Filesystem::filetype($folder2.'/'.$file2); 
+			}
+			elseif($protocol=='caldav'){
+				$type = $_SERVER['CONTENT_TYPE']; 
+			}
+			elseif($protocol=='carddav'){
+				$type = $_SERVER['CONTENT_TYPE']; 
+			}
+			elseif(is_dir($CONFIG_DATADIRECTORY.'/'.$user.'/files')){
+				$type='unknown';
+				if(is_file($CONFIG_DATADIRECTORY.'/'.$user.'/files'.$folder.$file)) $type='file';
+				elseif(is_dir($CONFIG_DATADIRECTORY.'/'.$user.'/files'.$folder.$file)) $type='dir';
+			}
+			if(strpos($type,';')){
+				$type=substr($type,0,strpos($type,';'));
+			}
+		} 
 		
 		if(self::insert($user, $protocol, $type, $folder, $file,$folder2,$file2, $action)){
 			return true;
@@ -177,37 +197,37 @@ class OC_SuperLog {
 			switch ($log['action']){
 				case 'write':
 						$activity=$l->t('Has created or modified').
-						' <span class="'.$log['type'].'">'.$log['name'].'</span> '.
+						' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						$l->t('in').
-						' <span class="dir">'.$log['folder'].'</span>';
+						' <span class="dir">'.urldecode($log['folder']).'</span>';
 					break;
 				case 'delete':
 						$activity=$l->t('Has deleted').
-						' <span class="'.$log['type'].'">'.$log['name'].'</span> '.
+						' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						$l->t('from').
-						' <span class="dir">'.$log['folder'].'</span> ';
+						' <span class="dir">'.urldecode($log['folder']).'</span> ';
 					break;
 				case 'move':
 						$activity=$l->t('Has moved').
-						' <span class="'.$log['type'].'">'.$log['name'].'</span> '.
+						' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						$l->t('from').
-						' <span class="dir">'.$log['folder'].'</span> ';
+						' <span class="dir">'.urldecode($log['folder']).'</span> ';
 						$l->t('to').
-						' <span class="dir">'.$log['folder2'].'</span> ';
+						' <span class="dir">'.urldecode($log['folder2']).'</span> ';
 					break;
 				case 'rename':
 					$activity=$l->t('Has renamed').
-						' <span class="'.$log['type'].'">'.$log['name'].'</span> '.
+						' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						$l->t('into').
-						' <span class="'.$log['type'].'">'.$log['name2'].'</span> '.
+						' <span class="'.$log['type'].'">'.urldecode($log['name2']).'</span> '.
 						$l->t('in').
-						' <span class="dir">'.$log['folder'].'</span> ';
+						' <span class="dir">'.urldecode($log['folder']).'</span> ';
 					break;
 				default:
 					$activity=$log['action'].
-					' <span class="'.$log['type'].'">'.$log['name'].'</span>'.
+					' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span>'.
 					$l->t('in').
-						' <span class="dir">'.$log['folder'].'</span> ';				
+						' <span class="dir">'.urldecode($log['folder']).'</span> ';				
 			}
 			$activity.=' <span class="protocol">'.$l->t('via').' '.$log['protocol'].'</span>';
 			
