@@ -23,7 +23,7 @@ class OC_SuperLog {
 		$file2 = is_array($path2)?basename($path2['path']):(!empty($path2)?basename($path2):$file);		
 		
 		$type='unknown';
-		$CONFIG_DATADIRECTORY = OC_Config::getValue( "datadirectory", OC::$SERVERROOT."/data" );
+		
 		if(!empty($file2)){
 			if($protocol=='web'){
 				$type = \OC\Files\Filesystem::filetype($folder2.'/'.$file2); 
@@ -34,10 +34,13 @@ class OC_SuperLog {
 			elseif($protocol=='carddav'){
 				$type = $_SERVER['CONTENT_TYPE']; 
 			}
-			elseif(is_dir($CONFIG_DATADIRECTORY.'/'.$user.'/files')){
-				$type='unknown';
-				if(is_file($CONFIG_DATADIRECTORY.'/'.$user.'/files'.$folder.$file)) $type='file';
-				elseif(is_dir($CONFIG_DATADIRECTORY.'/'.$user.'/files'.$folder.$file)) $type='dir';
+			else{
+				$CONFIG_DATADIRECTORY = OC_Config::getValue( "datadirectory", OC::$SERVERROOT."/data" );
+				if(is_dir($CONFIG_DATADIRECTORY.'/'.$user.'/files')){
+					$type='unknown';
+					if(is_file($CONFIG_DATADIRECTORY.'/'.$user.'/files'.$folder.$file)) $type='file';
+					elseif(is_dir($CONFIG_DATADIRECTORY.'/'.$user.'/files'.$folder.$file)) $type='dir';
+				}
 			}
 			if(strpos($type,';')){
 				$type=substr($type,0,strpos($type,';'));

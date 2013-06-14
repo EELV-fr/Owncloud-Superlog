@@ -54,6 +54,8 @@
         			<option value=""><?php echo $l->t('All');?></option>
         			<option value="web"><?php echo $l->t('Web interface');?></option>
         			<option value="webdav"><?php echo $l->t('WebDav access');?></option>
+        			<option value="carddav"><?php echo $l->t('CardDav access');?></option>
+        			<option value="caldav"><?php echo $l->t('CalDav access');?></option>
         		</select>
         	</label>
         </div>
