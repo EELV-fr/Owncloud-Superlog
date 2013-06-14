@@ -31,7 +31,7 @@ SuperLog.prototype={
 				if(n==0){
 					$('#superlog_more').fadeOut(500);
 				}
-				$('#superlog_start').val($('#superlog_start').val()+n);
+				$('#superlog_start').val(parseInt($('#superlog_start').val())+n);
 			}				
 		});
 	}
