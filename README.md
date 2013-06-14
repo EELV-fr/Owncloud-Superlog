@@ -4,6 +4,10 @@ Owncloud-Superlog
 Log users activity in order to debug and/or determine if mistake is machine or human side.
 
 ## Changelog:##
+
+v0.5.13
+* caldav protocol patch
+
 v0.5.12
 * Correct file and folder name encoding
 * webdav protocol patch

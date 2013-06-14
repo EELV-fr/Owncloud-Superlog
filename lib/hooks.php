@@ -44,13 +44,28 @@ class OC_SuperLog_Hooks{
 		$protocol='web';
 			
 		if(isset($vars['SCRIPT_NAME']) && basename($vars['SCRIPT_NAME'])=='remote.php'){
-			$pos=strpos($vars['REQUEST_URI'],'remote.php/webdav');
-			if($pos==-1) return;
+			$paths=explode('/',$vars['REQUEST_URI']);
+			$pos=array_search('remote.php',$paths);
+			$protocol=$paths[$pos+1];
+			$path='';
+			for($i=$pos+2 ; $i<sizeof($paths) ; $i++){
+				$path.='/'.$paths[$i];
+			}
 			
 			$action=strtolower($vars['REQUEST_METHOD']);
-			if($action=='put') $action='write';
-			$path=urldecode(substr($vars['REQUEST_URI'],$pos+17));			
-			$protocol='webdav';
+			
+			
+			if($protocol=='webdav'){	
+				if($action=='put') $action='write';			
+			}
+			if($protocol=='carddav'){			
+							
+			}
+			if($protocol=='caldav'){			
+							
+			}
+			
+			
 		} 
 		if(!in_array($action,array('head'))){
 			OC_SuperLog::log($path,NULL,$action,$protocol);
