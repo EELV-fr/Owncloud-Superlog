@@ -13,8 +13,9 @@ class OC_SuperLog {
 
 	public static function log($path,$path2,$action,$protocol='web'){
 		
-		$user = OCP\User::getUser();
-		if(empty($user)) $user = $_SERVER['PHP_AUTH_USER'];
+		
+		if(isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) $user = $_SERVER['PHP_AUTH_USER'];
+		else $user = OCP\User::getUser();
 		
 		$folder = is_array($path)?dirname($path['path']):dirname($path);
 		$file = is_array($path)?basename($path['path']):basename($path);
@@ -47,12 +48,7 @@ class OC_SuperLog {
 			}
 		} 
 		
-		if(self::insert($user, $protocol, $type, $folder, $file,$folder2,$file2, $action)){
-			return true;
-		}
-		else{
-			return false;
-		}
+		self::insert($user, $protocol, $type, $folder, $file,$folder2,$file2, $action);
 	}
 	
 	public static function clean(){
@@ -87,7 +83,7 @@ class OC_SuperLog {
 		if( (OC_DB::isError($check) || $check->fetchRow()==false) && !empty($folder) && !empty($file) ) {
 			$query=OC_DB::prepare('INSERT INTO `*PREFIX*superlog`(`user`, `date`,`protocol`,`type`, `folder`,`name`, `folder2`,`name2`,`action`,`vars`) VALUES(?,?,?,?,?,?,?,?,?,?)');
 			$result=$query->execute(array($user,$date, $protocol, $type, $folder, $file, $folder2, $file2,$action, $vars));		
-			return $result;
+			//return $result;
 		}
 		
 		
