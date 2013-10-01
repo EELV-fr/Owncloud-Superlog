@@ -25,7 +25,7 @@ SuperLog.prototype={
 					line+='<td>'+the_item['user']+'</td>';
 					line+='<td>'+the_item['activity']+'</td>';
 					line+='<td>'+the_item['date']+'</td>';
-					line+='</tr>'
+					line+='</tr>';
 					$('#superlogs_results').append(line);
 				}
 				if(n==0){
