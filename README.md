@@ -5,6 +5,12 @@ Log users activity in order to debug and/or determine if mistake is machine or h
 
 ## Changelog:##
 
+v0.5.15
+* fix js code warning
+
+v0.5.14
+* carddav protocol patch
+
 v0.5.13
 * caldav protocol patch
 
