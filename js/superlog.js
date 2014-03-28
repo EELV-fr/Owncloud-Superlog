@@ -53,7 +53,6 @@ $(document).ready(function(){
 		$('#superlog_more').click(function(){
 			superlogs.get();
 		});
-		
 		superlogs.get();
 	}
 });

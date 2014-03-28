@@ -12,16 +12,24 @@ class OC_SuperLog {
 	}
 
 	public static function log($path,$path2,$action,$protocol='web'){
-		
-		
 		if(isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) $user = $_SERVER['PHP_AUTH_USER'];
 		else $user = OCP\User::getUser();
+		
+		if($action=='login attempt'){
+			$user=$path;
+			$path='';
+		}
 		
 		$folder = is_array($path)?dirname($path['path']):dirname($path);
 		$file = is_array($path)?basename($path['path']):basename($path);
 		
 		$folder2 = is_array($path2)?dirname($path2['path']):(!empty($path2)?dirname($path2):$folder);
 		$file2 = is_array($path2)?basename($path2['path']):(!empty($path2)?basename($path2):$file);		
+		
+		if($action=='login attempt' || $action=='login'){
+			$file='.';
+			$folder='.';
+		}
 		
 		$type='unknown';
 		
@@ -49,6 +57,7 @@ class OC_SuperLog {
 		} 
 		
 		self::insert($user, $protocol, $type, $folder, $file,$folder2,$file2, $action);
+		
 	}
 	
 	public static function clean(){
@@ -61,6 +70,7 @@ class OC_SuperLog {
 	
 
 	public static function insert($user, $protocol, $type, $folder, $file,$folder2,$file2, $action){
+			
 		self::clean();
 		
 		$request=$_REQUEST;
@@ -80,9 +90,12 @@ class OC_SuperLog {
 		
 		$query=OC_DB::prepare('SELECT `id` FROM `*PREFIX*superlog` WHERE `user`=? AND `date`LIKE ? AND `protocol`=? AND `type`=? AND `folder`=? AND`name`=? AND `folder2`=? AND `name2`=? AND `action`=?');
 		$check=$query->execute(array($user,$datechk, $protocol, $type, $folder, $file, $folder2, $file2,$action));
-		if( (OC_DB::isError($check) || $check->fetchRow()==false) && !empty($folder) && !empty($file) ) {
+		
+		if( (false==$check || empty($check) || (OC_DB::isError($check) || $check->fetchRow()==false)) && !empty($folder) && !empty($file)  ) {
 			$query=OC_DB::prepare('INSERT INTO `*PREFIX*superlog`(`user`, `date`,`protocol`,`type`, `folder`,`name`, `folder2`,`name2`,`action`,`vars`) VALUES(?,?,?,?,?,?,?,?,?,?)');
 			$result=$query->execute(array($user,$date, $protocol, $type, $folder, $file, $folder2, $file2,$action, $vars));		
+			
+		
 			//return $result;
 		}
 		
@@ -222,8 +235,14 @@ class OC_SuperLog {
 						$l->t('in').
 						' <span class="dir">'.urldecode($log['folder']).'</span> ';
 					break;
+				case 'login':
+					$activity=$l->t('login');
+					break;
+				case 'login attempt':
+					$activity=$l->t('login attempt');
+					break;
 				default:
-					$activity=$log['action'].
+					$activity=$l->t($log['action']).
 					' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span>'.
 					$l->t('in').
 						' <span class="dir">'.urldecode($log['folder']).'</span> ';				
