@@ -24,10 +24,16 @@
 'WebDav access'=>'Accès webdav',
 'CardDav access'=>'Accès carddav',
 'CalDav access'=>'Accès caldav',
+'logout'=>'Déconnexion',
+'login'=>'Connexion',
+'login attempt'=>'Tentative de connexion',
+'enable app'=>'Activation d\'application',
+'disable app'=>'Désactivation d\'application',
 
 'User'=>'Utilisat-eur-rice',
-'Activity'=>'Activité',
 'Date'=>'Date',
+
+
 
 'More...'=>'Plus...',
 

@@ -1,10 +1,6 @@
 <?php
 
 class OC_SuperLog_Hooks{
-	
-	
-	
-	
 	// Webapp Files	
 	static public function write($path) {
 		OC_SuperLog::log($path,NULL,'write');
@@ -26,6 +22,9 @@ class OC_SuperLog_Hooks{
 	
 	
 	// Users
+	static public function prelogin($vars) {
+		OC_SuperLog::log($vars['uid'],'/','login attempt');
+	}
 	static public function login($vars) {
 		OC_SuperLog::log('/','/','login');
 	}
@@ -36,6 +35,14 @@ class OC_SuperLog_Hooks{
 	// Webdav
 	static public function dav($vars) {
 		OC_SuperLog::log('/','/','dav');
+	}
+	
+	// Apps
+	static public function app_enable($vars){
+		OC_SuperLog::log($vars['app'],'','enable app');
+	}
+	static public function app_disable($vars){
+		OC_SuperLog::log($vars['app'],'','disable app');
 	}
 	
 	static public function all($vars) {
@@ -52,8 +59,7 @@ class OC_SuperLog_Hooks{
 				$path.='/'.$paths[$i];
 			}
 			
-			$action=strtolower($vars['REQUEST_METHOD']);
-			
+			$action=strtolower($vars['REQUEST_METHOD']);			
 			
 			if($protocol=='webdav'){	
 				if($action=='put') $action='write';			
@@ -63,8 +69,7 @@ class OC_SuperLog_Hooks{
 			}
 			if($protocol=='caldav'){			
 							
-			}
-			
+			}			
 			
 		} 
 		if(!in_array($action,array('head'))){
