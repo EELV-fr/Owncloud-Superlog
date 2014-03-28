@@ -21,6 +21,10 @@ CREATE TABLE IF NOT EXISTS `oc_superlog` (
 
 ## Changelog:##
 
+v0.6.0
+* add : OC6 friendly
+* add : Apps enable/disable
+
 v0.5.15
 * fix js code warning
 
