@@ -19,18 +19,19 @@ class OC_SuperLog {
 			$user=$path;
 			$path='';
 		}
+		$folder2='';
 
 		if ($action=='share') {
-		  $a=$path;
-		  $file=basename($a['fileTarget']);
-		  $folder=dirname($a['fileTarget']);
-		  $user=$a['uidOwner'];
-		  if (!empty($a['shareWith'])) {
-		      $folder2=$a['shareWith'];
+		  $vars=$path;
+		  $file=basename($vars['fileTarget']);
+		  $folder=dirname($vars['fileTarget']);
+		  $user=$vars['uidOwner'];
+		  if (!empty($vars['shareWith'])) {
+		      $folder2=$vars['shareWith'];
 		    } else {
 		      $folder2='PUBLIC';
 		    }
-		  $path='';
+		  $path=$vars['fileTarget'];
 		  $path2='';
 		}
 		  
@@ -38,7 +39,7 @@ class OC_SuperLog {
 		$folder = is_array($path)?dirname($path['path']):dirname($path);
 		$file = is_array($path)?basename($path['path']):basename($path);
 		
-		$folder2 = is_array($path2)?dirname($path2['path']):(!empty($path2)?dirname($path2):$folder);
+		if (empty($folder2)) $folder2 = is_array($path2)?dirname($path2['path']):(!empty($path2)?dirname($path2):$folder);
 		$file2 = is_array($path2)?basename($path2['path']):(!empty($path2)?basename($path2):$file);		
 		
 		if($action=='login attempt' || $action=='login'){
@@ -111,7 +112,7 @@ class OC_SuperLog {
 			$result=$query->execute(array($user,$date, $protocol, $type, $folder, $file, $folder2, $file2,$action, $vars));		
 			
 		
-			//return $result;
+			return $result;
 		}
 		
 		
@@ -250,6 +251,12 @@ class OC_SuperLog {
 						$l->t('in').
 						' <span class="dir">'.urldecode($log['folder']).'</span> ';
 					break;
+			        case 'share':
+				        $activity=$l->t('Has shared').
+						  ' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
+						  $l->t('with').
+						  ' <span class="'.$log['type'].'">'.urldecode($log['folder2']).'</span> ';
+				        break;
 				case 'login':
 					$activity=$l->t('login');
 					break;

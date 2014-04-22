@@ -39,6 +39,9 @@ OC_HOOK::connect('OC_Filesystem', 'post_delete', 'OC_SuperLog_Hooks', 'delete');
 OC_HOOK::connect('OC_Filesystem', 'post_rename', 'OC_SuperLog_Hooks', 'rename');
 OC_HOOK::connect('OC_Filesystem', 'post_copy', 'OC_SuperLog_Hooks', 'copy');
 
+// Share
+OC_HOOK::connect('OCP\Share', 'post_shared', 'OC_SuperLog_Hooks', 'share');
+
 OC_HOOK::connect('\OC\Files\Storage\Shared', 'file_put_contents', 'OC_SuperLog_Hooks', 'all');
 
 // Webdav
