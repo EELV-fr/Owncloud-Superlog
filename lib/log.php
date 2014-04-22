@@ -15,10 +15,25 @@ class OC_SuperLog {
 		if(isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) $user = $_SERVER['PHP_AUTH_USER'];
 		else $user = OCP\User::getUser();
 		
-		if($action=='login attempt'){
+		if ($action=='login attempt') {
 			$user=$path;
 			$path='';
 		}
+
+		if ($action=='share') {
+		  $a=$path;
+		  $file=basename($a['fileTarget']);
+		  $folder=dirname($a['fileTarget']);
+		  $user=$a['uidOwner'];
+		  if (!empty($a['shareWith'])) {
+		      $folder2=$a['shareWith'];
+		    } else {
+		      $folder2='PUBLIC';
+		    }
+		  $path='';
+		  $path2='';
+		}
+		  
 		
 		$folder = is_array($path)?dirname($path['path']):dirname($path);
 		$file = is_array($path)?basename($path['path']):basename($path);
