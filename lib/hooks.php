@@ -20,6 +20,9 @@ class OC_SuperLog_Hooks{
 		OC_SuperLog::log($paths['oldpath'],$paths['newpath'],'copy');
 	}
 	
+	static public function share($path) {
+		OC_SuperLog::log($path,NULL,'share');
+	}
 	
 	// Users
 	static public function prelogin($vars) {
