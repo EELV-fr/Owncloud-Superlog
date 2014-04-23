@@ -27,14 +27,36 @@ class OC_SuperLog {
 		  $folder=dirname($vars['fileTarget']);
 		  $user=$vars['uidOwner'];
 		  if (!empty($vars['shareWith'])) {
-		      $folder2=$vars['shareWith'];
-		    } else {
-		      $folder2='PUBLIC';
-		    }
+		    $folder2=$vars['shareWith'];
+		  } else {
+		    $folder2='PUBLIC';
+		  }
 		  $path=$vars['fileTarget'];
 		  $path2='';
 		}
-		  
+
+		if ($action=='unshare') {
+		  $vars=$path;
+		  $file=basename($vars['fileSource']);
+		  $folder=dirname($vars['fileSource']);
+		  $user=$vars['uidOwner'];
+		  if (!empty($vars['shareWith'])) {
+		    $folder2=$vars['shareWith'];
+		  } else {
+		    $folder2='PUBLIC';
+		  }
+		  // there is probably a better way to do this, but I'm not quite
+		  // sure how to use OCP\Share::getItems()
+		  $query = OC_DB::prepare('SELECT `file_target` FROM `*PREFIX*share` WHERE `item_source`=? AND `item_type`=?');
+		  $result = $query->execute(array($vars['itemSource'],$vars['itemType']));
+		  if (OC_DB::isError($result)) {
+		      $path = "Can't find result for " . $vars['itemSource'];
+		  } else {
+		      $row = $result->fetchRow();
+		      $path = $row['file_target'];
+		  }
+		  $path2='';
+		} 
 		
 		$folder = is_array($path)?dirname($path['path']):dirname($path);
 		$file = is_array($path)?basename($path['path']):basename($path);
@@ -253,6 +275,12 @@ class OC_SuperLog {
 					break;
 			        case 'share':
 				        $activity=$l->t('Has shared').
+						  ' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
+						  $l->t('with').
+						  ' <span class="'.$log['type'].'">'.urldecode($log['folder2']).'</span> ';
+				        break;
+   			        case 'unshare':
+				        $activity=$l->t('Has unshared').
 						  ' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						  $l->t('with').
 						  ' <span class="'.$log['type'].'">'.urldecode($log['folder2']).'</span> ';
