@@ -43,7 +43,8 @@ class OC_SuperLog {
 		  if (!empty($vars['shareWith'])) {
 		    $folder2=$vars['shareWith'];
 		  } else {
-		    $folder2='PUBLIC';
+		    //$folder2='PUBLIC';
+		    $folder2=OCP\IURLGenerator::getAbsoluteURL('public.php?service=files&t=' . $vars['token'];
 		  }
 		  // there is probably a better way to do this, but I'm not quite
 		  // sure how to use OCP\Share::getItems()
@@ -301,7 +302,7 @@ class OC_SuperLog {
 			
 			
 			$logs[]=array(
-				'user'=>$log['user'],
+				'user'=>OCP\User::getDisplayName($log['user']),
 				'date'=>date($l->t('m.d.Y H:i:s'),strtotime($log['date'])),
 				'activity'=>$activity
 			);
