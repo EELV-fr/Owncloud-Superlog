@@ -29,7 +29,8 @@ class OC_SuperLog {
 		  if (!empty($vars['shareWith'])) {
 		    $folder2=$vars['shareWith'];
 		  } else {
-		    $folder2='PUBLIC';
+		    //$folder2='PUBLIC';
+		    $folder2=\OCP\Util::linkToPublic('files') .'&t=' . $vars['token'];
 		  }
 		  $path=$vars['fileTarget'];
 		  $path2='';
@@ -44,7 +45,7 @@ class OC_SuperLog {
 		    $folder2=$vars['shareWith'];
 		  } else {
 		    //$folder2='PUBLIC';
-		    $folder2=OCP\IURLGenerator::getAbsoluteURL('public.php?service=files&t=' . $vars['token'];
+		    $folder2=\OCP\Util::linkToPublic('files') .'&t=' . $vars['token'];
 		  }
 		  // there is probably a better way to do this, but I'm not quite
 		  // sure how to use OCP\Share::getItems()
