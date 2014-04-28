@@ -46,6 +46,8 @@
         			<option value="delete"><?php echo $l->t('Delete');?></option>	
         			<option value="move"><?php echo $l->t('Move');?></option>		
         			<option value="rename"><?php echo $l->t('Rename');?></option>	
+        			<option value="share"><?php echo $l->t('Share');?></option>	
+        			<option value="unshare"><?php echo $l->t('Unshare');?></option>	
         		</select>
         	</label>
         	<label for="superlog_protocol">
