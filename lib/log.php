@@ -263,7 +263,7 @@ class OC_SuperLog {
 						$activity=$l->t('Has moved').
 						' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						$l->t('from').
-						' <span class="dir">'.urldecode($log['folder']).'</span> ';
+						' <span class="dir">'.urldecode($log['folder']).'</span> '.
 						$l->t('to').
 						' <span class="dir">'.urldecode($log['folder2']).'</span> ';
 					break;
