@@ -5,6 +5,7 @@
 *
 */
 
+use OCP\User;
 
 class OC_SuperLog {
 	public function __construct(){		
@@ -13,7 +14,7 @@ class OC_SuperLog {
 
 	public static function log($path,$path2,$action,$protocol='web'){
 		if(isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) $user = $_SERVER['PHP_AUTH_USER'];
-		else $user = OCP\User::getUser();
+		else $user = OCP\User::getUser(); 
 		
 		if ($action=='login attempt') {
 			$user=$path;
@@ -279,13 +280,13 @@ class OC_SuperLog {
 				        $activity=$l->t('Has shared').
 						  ' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						  $l->t('with').
-						  ' <span class="'.$log['type'].'">'.urldecode($log['folder2']).'</span> ';
+						  ' <span class="'.$log['type'].'">'.OCP\User::getDisplayName(urldecode($log['folder2'])).'</span> ';
 				        break;
    			        case 'unshare':
 				        $activity=$l->t('Has unshared').
 						  ' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						  $l->t('with').
-						  ' <span class="'.$log['type'].'">'.urldecode($log['folder2']).'</span> ';
+						  ' <span class="'.$log['type'].'">'.OCP\User::getDisplayName(urldecode($log['folder2'])).'</span> ';
 				        break;
 				case 'login':
 					$activity=$l->t('login');

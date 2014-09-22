@@ -1,8 +1,9 @@
 <?php if(basename($_SERVER['REQUEST_URI'])=='admin'): ?>
+<div class="section">
 <form id="superlogsettings" method="post" action="#superlogsettings">
     <fieldset class="personalblock">
     	
-    	<legend><strong>SuperLog</strong></legend>
+    	<legend><h2>SuperLog</h2></legend>
 	        <p>
 	            <label for="superlog_lifetime"><?php echo $l->t('Logs life time:');?>
 	            <input type="number" id="superlog_lifetime" name="superlog_lifetime" value="<?php echo $_['superlog_lifetime']; ?>" size="3"/> 
@@ -14,7 +15,6 @@
 </form> 
 <?php endif; ?>
     <fieldset id="superlog"  class="personalblock">   
-        <legend><strong>SuperLog <?php echo $l->t('Activity');?></strong></legend>  
         <div id="superlog_filter">
         	<span id="superlog_filters"><?php echo $l->t('Filters');?></span>
         	<input type="hidden" value="0" id="superlog_start"/>
@@ -75,3 +75,4 @@
         </table>  
         <input type="button" id="superlog_more" value="<?php echo $l->t('More...');?>"/>   
     </fieldset>
+</div>
