@@ -61,7 +61,7 @@
         		</select>
         	</label>
         </div>
-        <table>
+        <table id="log" class="grid">
         	<thead>
         		<tr>
         			<th><?php echo $l->t('User');?></th>
