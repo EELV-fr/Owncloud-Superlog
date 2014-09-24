@@ -1,8 +1,9 @@
-<?php if(basename($_SERVER['REQUEST_URI'])=='admin'): ?>
+<div class="section">
 <form id="superlogsettings" method="post" action="#superlogsettings">
+    <h2>SuperLog</h2>
+    <?php if(basename($_SERVER['REQUEST_URI'])=='admin'): ?>
     <fieldset class="personalblock">
-    	
-    	<legend><strong>SuperLog</strong></legend>
+    <h3>Audit Log Settings</h3>
 	        <p>
 	            <label for="superlog_lifetime"><?php echo $l->t('Logs life time:');?>
 	            <input type="number" id="superlog_lifetime" name="superlog_lifetime" value="<?php echo $_['superlog_lifetime']; ?>" size="3"/> 
@@ -10,11 +11,10 @@
 	            </label>         
 	        </p>      
         <input type="submit" value="<?php echo $l->t('Save');?>" /> 
-	</fieldset> 
-</form> 
+    </fieldset> 
 <?php endif; ?>
     <fieldset id="superlog"  class="personalblock">   
-        <legend><strong>SuperLog <?php echo $l->t('Activity');?></strong></legend>  
+    <h3>Audit Log</h3>
         <div id="superlog_filter">
         	<span id="superlog_filters"><?php echo $l->t('Filters');?></span>
         	<input type="hidden" value="0" id="superlog_start"/>
@@ -46,6 +46,8 @@
         			<option value="delete"><?php echo $l->t('Delete');?></option>	
         			<option value="move"><?php echo $l->t('Move');?></option>		
         			<option value="rename"><?php echo $l->t('Rename');?></option>	
+        			<option value="share"><?php echo $l->t('Share');?></option>	
+        			<option value="unshare"><?php echo $l->t('Unshare');?></option>	
         		</select>
         	</label>
         	<label for="superlog_protocol">
@@ -59,7 +61,7 @@
         		</select>
         	</label>
         </div>
-        <table>
+        <table id="log" class="grid">
         	<thead>
         		<tr>
         			<th><?php echo $l->t('User');?></th>
@@ -73,3 +75,5 @@
         </table>  
         <input type="button" id="superlog_more" value="<?php echo $l->t('More...');?>"/>   
     </fieldset>
+    </form> 
+</div>

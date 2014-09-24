@@ -2,8 +2,8 @@
 <info>
 	<id>superlog</id>
 	<name>SuperLog</name>
-	<description>Log users activities in order to debug and/or determine if mistake is machine or human side.</description>
-	<version>0.6.0</version>
+	<description>Log users activities in order to debug and/or determine if mistake is machine or human side. License compliance: E-ONE custom changes are available on Github at https://github.com/morgan-greywolf/Owncloud-Superlog</description>
+	<version>2014-04-28</version>
 	<licence>AGPL</licence>
 	<author>Bastien Ho</author>
 	<require>6</require>

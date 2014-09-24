@@ -21,6 +21,11 @@ CREATE TABLE IF NOT EXISTS `oc_superlog` (
 
 ## Changelog:##
 
+2014-04-28
+* add : OC7 Friendly
+* add : Add support for logging share and unshare item.
+* add : Make log entries use display name rather username for better LDAP support.
+
 v0.6.0
 * add : OC6 friendly
 * add : Apps enable/disable

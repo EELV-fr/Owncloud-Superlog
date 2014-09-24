@@ -5,6 +5,7 @@
 *
 */
 
+use OCP\User;
 
 class OC_SuperLog {
 	public function __construct(){		
@@ -13,17 +14,57 @@ class OC_SuperLog {
 
 	public static function log($path,$path2,$action,$protocol='web'){
 		if(isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) $user = $_SERVER['PHP_AUTH_USER'];
-		else $user = OCP\User::getUser();
+		else $user = OCP\User::getUser(); 
 		
-		if($action=='login attempt'){
+		if ($action=='login attempt') {
 			$user=$path;
 			$path='';
 		}
+		$folder2='';
+
+		if ($action=='share') {
+		  $vars=$path;
+		  $file=basename($vars['fileTarget']);
+		  $folder=dirname($vars['fileTarget']);
+		  $user=$vars['uidOwner'];
+		  if (!empty($vars['shareWith'])) {
+		    $folder2=$vars['shareWith'];
+		  } else {
+		    //$folder2='PUBLIC';
+		    $folder2=\OCP\Util::linkToPublic('files') .'&t=' . $vars['token'];
+		  }
+		  $path=$vars['fileTarget'];
+		  $path2='';
+		}
+
+		if ($action=='unshare') {
+		  $vars=$path;
+		  $file=basename($vars['fileSource']);
+		  $folder=dirname($vars['fileSource']);
+		  $user=$vars['uidOwner'];
+		  if (!empty($vars['shareWith'])) {
+		    $folder2=$vars['shareWith'];
+		  } else {
+		    //$folder2='PUBLIC';
+		    $folder2=\OCP\Util::linkToPublic('files') .'&t=' . $vars['token'];
+		  }
+		  // there is probably a better way to do this, but I'm not quite
+		  // sure how to use OCP\Share::getItems()
+		  $query = OC_DB::prepare('SELECT `file_target` FROM `*PREFIX*share` WHERE `item_source`=? AND `item_type`=?');
+		  $result = $query->execute(array($vars['itemSource'],$vars['itemType']));
+		  if (OC_DB::isError($result)) {
+		      $path = "Can't find result for " . $vars['itemSource'];
+		  } else {
+		      $row = $result->fetchRow();
+		      $path = $row['file_target'];
+		  }
+		  $path2='';
+		} 
 		
 		$folder = is_array($path)?dirname($path['path']):dirname($path);
 		$file = is_array($path)?basename($path['path']):basename($path);
 		
-		$folder2 = is_array($path2)?dirname($path2['path']):(!empty($path2)?dirname($path2):$folder);
+		if (empty($folder2)) $folder2 = is_array($path2)?dirname($path2['path']):(!empty($path2)?dirname($path2):$folder);
 		$file2 = is_array($path2)?basename($path2['path']):(!empty($path2)?basename($path2):$file);		
 		
 		if($action=='login attempt' || $action=='login'){
@@ -96,7 +137,7 @@ class OC_SuperLog {
 			$result=$query->execute(array($user,$date, $protocol, $type, $folder, $file, $folder2, $file2,$action, $vars));		
 			
 		
-			//return $result;
+			return $result;
 		}
 		
 		
@@ -223,7 +264,7 @@ class OC_SuperLog {
 						$activity=$l->t('Has moved').
 						' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
 						$l->t('from').
-						' <span class="dir">'.urldecode($log['folder']).'</span> ';
+						' <span class="dir">'.urldecode($log['folder']).'</span> '.
 						$l->t('to').
 						' <span class="dir">'.urldecode($log['folder2']).'</span> ';
 					break;
@@ -235,6 +276,18 @@ class OC_SuperLog {
 						$l->t('in').
 						' <span class="dir">'.urldecode($log['folder']).'</span> ';
 					break;
+			        case 'share':
+				        $activity=$l->t('Has shared').
+						  ' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
+						  $l->t('with').
+						  ' <span class="'.$log['type'].'">'.OCP\User::getDisplayName(urldecode($log['folder2'])).'</span> ';
+				        break;
+   			        case 'unshare':
+				        $activity=$l->t('Has unshared').
+						  ' <span class="'.$log['type'].'">'.urldecode($log['name']).'</span> '.
+						  $l->t('with').
+						  ' <span class="'.$log['type'].'">'.OCP\User::getDisplayName(urldecode($log['folder2'])).'</span> ';
+				        break;
 				case 'login':
 					$activity=$l->t('login');
 					break;
@@ -251,7 +304,7 @@ class OC_SuperLog {
 			
 			
 			$logs[]=array(
-				'user'=>$log['user'],
+				'user'=>OCP\User::getDisplayName($log['user']),
 				'date'=>date($l->t('m.d.Y H:i:s'),strtotime($log['date'])),
 				'activity'=>$activity
 			);
