@@ -3,10 +3,13 @@
 	<id>superlog</id>
 	<name>SuperLog</name>
 	<description>Log users activities in order to debug and/or determine if mistake is machine or human side.</description>
-	<version>0.7.0</version>
+	<version>0.8.1</version>
 	<licence>AGPL</licence>
-	<author>Bastien Ho</author>
+	<author>Bastien Ho, Thomas Müller</author>
 	<dependencies>
-		<owncloud min-version="6.0" max-version="9.0" />
+		<owncloud min-version="10.0" max-version="10.0" />
 	</dependencies>
+	<types>
+		<filesystem/>
+	</types>
 </info>

@@ -1,12 +1,12 @@
 <?php
 OCP\JSON::checkLoggedIn();
 OCP\JSON::callCheck();
-$params = OC_SuperLog::params($_REQUEST);
+$params = \OCA\Superlog\Log::params($_REQUEST);
 
 if(isset($_SERVER['HTTP_REFERER']) && basename($_SERVER['HTTP_REFERER'])!='admin'){
 	$params['user']=OC_User::getUser();
 }
-if(false === $list = OC_SuperLog::get($params)){
+if(false === $list = \OCA\Superlog\Log::get($params)){
 	OCP\JSON::error(array('message'=>'Error retreiving superlog list'));
 } 
 else{
