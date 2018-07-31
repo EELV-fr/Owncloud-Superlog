@@ -18,39 +18,38 @@
 *  
 * 
 */
-OC::$CLASSPATH['OC_SuperLog'] = 'superlog/lib/log.php';
-OC::$CLASSPATH['OC_SuperLog_Hooks'] = 'superlog/lib/hooks.php';
 
 OCP\Util::addStyle('superlog', 'superlog');
 OCP\Util::addScript('superlog', 'superlog');
 
 OCP\App::registerAdmin('superlog','settings');
-OCP\App::registerPersonal('superlog', 'settings');
+//OCP\App::registerPersonal('superlog', 'settings');
+
+\OC::$server->getEventDispatcher()->addListener(\OCP\App\ManagerEvent::EVENT_APP_ENABLE, function (\OCP\App\ManagerEvent $event) {
+    \OCA\Superlog\Log::log($event->getAppID(),'','enable app');
+});
+
+\OC::$server->getEventDispatcher()->addListener(\OCP\App\ManagerEvent::EVENT_APP_DISABLE, function (\OCP\App\ManagerEvent $event) {
+    \OCA\Superlog\Log::log($event->getAppID(),'','disable app');
+});
 
 /* HOOKS */
 // Users
-OC_HOOK::connect('OC_User', 'pre_login', 'OC_SuperLog_Hooks', 'prelogin');
-OC_HOOK::connect('OC_User', 'post_login', 'OC_SuperLog_Hooks', 'login');
-OC_HOOK::connect('OC_User', 'logout', 'OC_SuperLog_Hooks', 'logout');
+OC_Hook::connect('OC_User', 'pre_login', \OCA\Superlog\Hooks::class, 'prelogin');
+OC_Hook::connect('OC_User', 'post_login', \OCA\Superlog\Hooks::class, 'login');
+OC_Hook::connect('OC_User', 'logout', \OCA\Superlog\Hooks::class, 'logout');
 
 // Filesystem
-OC_HOOK::connect('OC_Filesystem', 'post_write', 'OC_SuperLog_Hooks', 'write');
-OC_HOOK::connect('OC_Filesystem', 'post_delete', 'OC_SuperLog_Hooks', 'delete');
-OC_HOOK::connect('OC_Filesystem', 'post_rename', 'OC_SuperLog_Hooks', 'rename');
-OC_HOOK::connect('OC_Filesystem', 'post_copy', 'OC_SuperLog_Hooks', 'copy');
+OC_Hook::connect('OC_Filesystem', 'post_write', \OCA\Superlog\Hooks::class, 'write');
+OC_Hook::connect('OC_Filesystem', 'post_delete', \OCA\Superlog\Hooks::class, 'delete');
+OC_Hook::connect('OC_Filesystem', 'post_rename', \OCA\Superlog\Hooks::class, 'rename');
+OC_Hook::connect('OC_Filesystem', 'post_copy', \OCA\Superlog\Hooks::class, 'copy');
 
-OC_HOOK::connect('\OC\Files\Storage\Shared', 'file_put_contents', 'OC_SuperLog_Hooks', 'all');
-
-// Webdav
-OC_HOOK::connect('OC_DAV', 'initialize', 'OC_SuperLog_Hooks', 'dav');
-
-//Apps
-OC_HOOK::connect('OC_App', 'post_enable', 'OC_SuperLog_Hooks', 'app_enable');
-OC_HOOK::connect('OC_App', 'pre_disable', 'OC_SuperLog_Hooks', 'app_disable');
+OC_Hook::connect('\OC\Files\Storage\Shared', 'file_put_contents', \OCA\Superlog\Hooks::class, 'all');
 
 // Cleanning settings
-\OCP\BackgroundJob::addRegularTask('OC_SuperLog', 'clean');
+\OCP\BackgroundJob::addRegularTask(\OCA\Superlog\Log::class, 'clean');
 if (isset($_POST['superlog_lifetime']) && is_numeric($_POST['superlog_lifetime'])) {
-   OC_Appconfig::setValue('superlog', 'superlog_lifetime', $_POST['superlog_lifetime']);
+   OC::$server->getConfig()->setAppValue('superlog', 'superlog_lifetime', $_POST['superlog_lifetime']);
 }
 
